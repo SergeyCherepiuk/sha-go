@@ -1,9 +1,11 @@
 package main
 
 import (
-	"fmt"
+	"bytes"
 	"log"
 	"os"
+
+	"github.com/SergeyCherepiuk/sha-go/internal/sha"
 )
 
 func main() {
@@ -12,5 +14,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Println(message)
+	message = bytes.TrimSpace(message)
+
+	sha.Hash(message)
 }

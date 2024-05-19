@@ -2,11 +2,10 @@ package ascii
 
 import (
 	"fmt"
-	"strconv"
 )
 
-func ToBits(s string) []uint8 {
-	bits := make([]uint8, len(s)*8)
+func ToBits(s string) []byte {
+	bits := make([]byte, len(s)*8)
 
 	for i, ch := range s {
 		chBits := byteToBits(byte(ch))
@@ -30,24 +29,20 @@ func FromBits(bits []uint8) string {
 	return string(bytes)
 }
 
-func byteToBits(ch byte) [8]uint8 {
-	var bits [8]uint8
-
-	bitsString := fmt.Sprintf("%.8b", ch)
-	for i, ch := range bitsString {
-		bit, _ := strconv.ParseUint(string(ch), 2, 8)
-		bits[i] = uint8(bit)
+func byteToBits(ch byte) [8]byte {
+	bits := [8]byte{}
+	for i, r := range fmt.Sprintf("%.8b", ch) {
+		bits[i] = byte(r)
 	}
-
 	return bits
 }
 
-func bitsToByte(bits [8]uint8) byte {
+func bitsToByte(bits [8]byte) byte {
 	degrees := [8]uint8{128, 64, 32, 16, 8, 4, 2, 1}
 
 	var sum byte
 	for i, b := range bits {
-		sum += degrees[i] * b
+		sum += degrees[i] * (b - 48)
 	}
 
 	return sum
