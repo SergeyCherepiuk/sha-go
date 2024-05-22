@@ -18,6 +18,7 @@ func main() {
 	message = bytes.TrimSpace(message)
 	fmt.Println(string(message))
 
-	hash := sha.Hash(message)
-	fmt.Println(string(hash))
+	hash := sha.Sum(message)
+	fmt.Println(hash.String())
+	fmt.Println(hash.Bits())
 }

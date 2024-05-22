@@ -92,7 +92,27 @@ var K = []uint32{
 	0b11000110011100010111100011110010,
 }
 
-func Hash(message []byte) []byte {
+type Hash [32]byte
+
+func (h Hash) String() string {
+	bytes := make([]byte, 0, 64)
+	for _, b := range [32]byte(h) {
+		hex := fmt.Sprintf("%.2x", b)
+		bytes = append(bytes, hex...)
+	}
+	return string(bytes)
+}
+
+func (h Hash) Bits() string {
+	bits := make([]byte, 0, 256)
+	for _, b := range [32]byte(h) {
+		hex := fmt.Sprintf("%.8b", b)
+		bits = append(bits, hex...)
+	}
+	return string(bits)
+}
+
+func Sum(message []byte) Hash {
 	block := messageBlock(message)
 	integers := integerBlock(block)
 
@@ -104,7 +124,7 @@ func Hash(message []byte) []byte {
 		processChunk(integers[start:end])
 	}
 
-	return formatHash(H0, H1, H2, H3, H4, H5, H6, H7)
+	return toHash(H0, H1, H2, H3, H4, H5, H6, H7)
 }
 
 func messageBlock(message []byte) []byte {
@@ -249,11 +269,13 @@ func majority(a, b, c uint32) uint32 {
 	return (a & b) ^ (a & c) ^ (b & c)
 }
 
-func formatHash(parts ...uint32) []byte {
-	hash := make([]byte, 0, len(parts)*4)
-	for _, part := range parts {
-		hex := fmt.Sprintf("%.8x", part)
-		hash = append(hash, hex...)
+func toHash(parts ...uint32) Hash {
+	hash := Hash{}
+	for i, part := range parts {
+		hash[i*4+0] = byte(part >> 24)
+		hash[i*4+1] = byte(part >> 16)
+		hash[i*4+2] = byte(part >> 8)
+		hash[i*4+3] = byte(part >> 0)
 	}
 	return hash
 }
