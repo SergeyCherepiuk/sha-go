@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"log"
 	"os"
 
@@ -15,6 +16,8 @@ func main() {
 	}
 
 	message = bytes.TrimSpace(message)
+	fmt.Println(string(message))
 
-	sha.Hash(message)
+	hash := sha.Hash(message)
+	fmt.Println(string(hash))
 }
